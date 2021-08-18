@@ -1,6 +1,6 @@
 <template>
   <el-container class="home-container">
-    
+
     <!-- 顶部区域 -->
     <el-header>
         <navHeader></navHeader>

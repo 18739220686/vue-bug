@@ -163,7 +163,6 @@
 </template>
 
 
-
 <script>
 
   import service from "../utils/axios";
@@ -173,7 +172,6 @@
   import {updateProject} from "../api/project";
 
   import {updateEnv} from "../api/env";
-
 
 
   export default {
@@ -201,7 +199,6 @@
           base_header: '{}',
 
           project_id: '',
-
 
 
         },
@@ -303,7 +300,6 @@
         }).catch(err => err);
 
 
-
         // 取消删除
 
         if (confirmResult !== "confirm") {
@@ -313,11 +309,9 @@
         }
 
 
-
         // 调用删除
 
         const {data: res} = await service.delete(`/env/${e_id}`);
-
 
 
         if (res.code !== 200) {
@@ -327,11 +321,9 @@
         }
 
 
-
         this.$message.success("删除成功")
 
         this.getenvGet()
-
 
 
       },
@@ -353,7 +345,6 @@
         this.$nextTick(() => {
 
           this.$refs['envFrom'].clearValidate()
-
 
 
         })
@@ -451,11 +442,7 @@
 </script>
 
 
-
 <style scoped>
-
-
-
 
 
 </style>

@@ -1,150 +1,152 @@
 <template>
   <div>
-  <!-- 分成三个部分 -->
-  <!-- navSideBar 左侧边栏 -->
-  <!-- 顶部tap -->
-  <!--  内容模块 -->
+    <!-- 分成三个部分 -->
+    <!-- navSideBar 左侧边栏 -->
+    <!-- 顶部tap -->
+    <!--  内容模块 -->
     <!-- <el-aside :width="isCollapse ? '65px' : '300px'">
     //     <project-tree></project-tree>
     // </el-aside> -->
-    <div style="margin-bottom: 20px;">
-      <el-button
-        size="small"
-        @click="addTab(editableTabsValue)"
-      >
-        add tab
-      </el-button>
-    </div>
-    <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab">
-      <el-tab-pane
-        v-for="(item) in editableTabs"
-        :key="item.name"
-        :label="item.title"
-        :name="item.name"
-      >
-        {{item.content}}
-      </el-tab-pane>
-    </el-tabs>
-    <el-form ref="addForm" :model="addForm" inline label-position="right" label-width="80px">
-      <!-- 搜索 -->
-      <el-card shadow="always">
-        <el-input placeholder="输入接口路径" class="input-with-select" v-model="addForm.path">
-          <el-select v-model="addForm.method" slot="prepend" placeholder="GET" prop="method">
-            <el-option label="GET" value="get"></el-option>
-            <el-option label="POST" value="post"></el-option>
-            <el-option label="PUT" value="put"></el-option>
-            <el-option label="DELECT" value="delect"></el-option>
-            <el-option label="PATCH" value="patch"></el-option>
-          </el-select>
-          <!--  按钮    -->
-          <el-button slot="append" type="success" plain @click="addCase">保存</el-button>
-          <el-button slot="append" type="success" plain @click="runCase">运行</el-button>
-        </el-input>
-        <el-card class="box-card">
-          <!-- 基本信息 -->
-          <span class="form-card">基本信息</span>
-          <!-- 名称 -->
-          <el-row type="flex" class="row-bg">
-            <el-col :span="12">
-              <el-form-item label="名称:">
-                <el-input v-model="addForm.name" placeholder="请输入名称" prop="case_name" style="width: 320px"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <!--  项目分类  -->
-              <el-form-item label="项目分类:">
-                <el-select v-model="addForm.project_id" clearable placeholder="请选择" prop="project_id"
-                           class="select-wrapper">
-                  <el-option
-                    v-for="item in nameList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                    prop="project_id">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row type="flex" class="row-bg">
-            <el-col :span="12">
-              <!-- 预期结果 -->
-              <el-form-item label="预期结果:">
-                <el-input
-                  type="textarea"
-                  autosize
-                  placeholder="请输入内容"
-                  v-model="addForm.expect"
-                  style="width: 320px"
-                  prop="expect">
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <!--  提取变量  -->
-              <el-form-item label="提取变量:">
-                <el-input
-                  type="textarea"
-                  autosize
-                  placeholder="请输入内容"
-                  v-model="addForm.extra"
-                  style="width: 320px"
-                  prop="extra">
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-card>
-        <!--   请求体    -->
-        <el-tabs class="data-request" type="border-card">
-          <el-tab-pane label="Body">
-            <el-radio-group v-model="addForm.content_type">
-              <el-radio :label="3">params</el-radio>
-              <el-radio :label="6">data</el-radio>
-              <el-radio :label="9">json</el-radio>
-            </el-radio-group>
+    <el-container>
+      <el-aside>
+        <navMenu @add-tab="handleAddTab"></navMenu>
+      </el-aside>
+      <el-main>
+        <div style="margin-bottom: 20px;">
+          <el-tabs v-model="editableTabsValue" type="card" editable @edit="handleTabsEdit">
+          </el-tabs>
+        </div>
+        <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab">
+          <el-tab-pane
+            v-for="(item) in editableTabs"
+            :key="item.name"
+            :label="item.title"
+            :name="item.name"
+          >
+            {{item.content}}
           </el-tab-pane>
-          <el-tab-pane label="Headers"></el-tab-pane>
-          <el-tab-pane label="Cookies"></el-tab-pane>
-          <el-input
-            v-model="addForm.body"
-            class="el-form"
-            type="textarea"
-            :rows="2"
-            placeholder="请输入内容">
-          </el-input>
         </el-tabs>
-      </el-card>
-      <div class="text item">
-        <!--  响应结果  -->
-        <el-card class="data-response">
-          <div slot="header" class="clearfix">
-            <span>Response</span>
-            <el-button style="float: right; padding: 1px 0" type="text" :data="tableData">
-              状态:{{tableData.response&&tableData.response.status}}
-            </el-button>
-            <el-button style="float: right; padding: 1px 0" type="text">
-              响应时间:{{tableData.response&&tableData.response.time}}
-            </el-button>
-            <el-button style="float: right; padding: 1px 0" type="text" :data="tableData">测试结果:{{tableData.result}}
-            </el-button>
-          </div>
-          <el-card style="margin: 5px;height:200px;">
-            <el-tabs v-model="tab">
-              <el-tab-pane label="请求信息" name="request">
-                {{ tableData.request}}
+        <el-form ref="addForm" :model="addForm" inline label-position="right" label-width="80px">
+          <!-- 搜索 -->
+          <el-card shadow="always">
+            <el-input placeholder="输入接口路径" class="input-with-select" v-model="addForm.path">
+              <el-select v-model="addForm.method" slot="prepend" placeholder="GET" prop="method">
+                <el-option label="GET" value="get"></el-option>
+                <el-option label="POST" value="post"></el-option>
+                <el-option label="PUT" value="put"></el-option>
+                <el-option label="DELECT" value="delect"></el-option>
+                <el-option label="PATCH" value="patch"></el-option>
+              </el-select>
+              <!--  按钮    -->
+              <el-button slot="append" type="success" plain @click="addCase">保存</el-button>
+              <el-button slot="append" type="success" plain @click="runCase">运行</el-button>
+            </el-input>
+            <el-card class="box-card">
+              <!-- 基本信息 -->
+              <span class="form-card">基本信息</span>
+              <!-- 名称 -->
+              <el-row type="flex" class="row-bg">
+                <el-col :span="12">
+                  <el-form-item label="名称:">
+                    <el-input v-model="addForm.name" placeholder="请输入名称" prop="case_name" style="width: 320px"/>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <!--  项目分类  -->
+                  <el-form-item label="项目分类:">
+                    <el-select v-model="addForm.project_id" clearable placeholder="请选择" prop="project_id"
+                               class="select-wrapper">
+                      <el-option
+                        v-for="item in nameList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                        prop="project_id">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+              <el-row type="flex" class="row-bg">
+                <el-col :span="12">
+                  <!-- 预期结果 -->
+                  <el-form-item label="预期结果:">
+                    <el-input
+                      type="textarea"
+                      autosize
+                      placeholder="请输入内容"
+                      v-model="addForm.expect"
+                      style="width: 320px"
+                      prop="expect">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <!--  提取变量  -->
+                  <el-form-item label="提取变量:">
+                    <el-input
+                      type="textarea"
+                      autosize
+                      placeholder="请输入内容"
+                      v-model="addForm.extra"
+                      style="width: 320px"
+                      prop="extra">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-card>
+            <!--   请求体    -->
+            <el-tabs class="data-request" type="border-card">
+              <el-tab-pane label="Body">
+                <el-radio-group v-model="addForm.content_type">
+                  <el-radio :label="3">params</el-radio>
+                  <el-radio :label="6">data</el-radio>
+                  <el-radio :label="9">json</el-radio>
+                </el-radio-group>
               </el-tab-pane>
-              <el-tab-pane label="响应结果" name="response">{{tableData.response}}</el-tab-pane>
-              <el-tab-pane label="断言信息" name="expect">{{tableData.expect}}</el-tab-pane>
-              <el-tab-pane label="提取变量" name="extra">{{tableData.extra}}</el-tab-pane>
-              <el-tab-pane label="异常信息" name="error">{{tableData.error_code}}</el-tab-pane>
+              <el-tab-pane label="Headers"></el-tab-pane>
+              <el-tab-pane label="Cookies"></el-tab-pane>
+              <el-input
+                v-model="addForm.body"
+                class="el-form"
+                type="textarea"
+                :rows="2"
+                placeholder="请输入内容">
+              </el-input>
             </el-tabs>
           </el-card>
-        </el-card>
-      </div>
-    </el-form>
-
+          <div class="text item">
+            <!--  响应结果  -->
+            <el-card class="data-response">
+              <div slot="header" class="clearfix">
+                <span>Response</span>
+                <el-button style="float: right; padding: 1px 0" type="text" :data="tableData">
+                  状态:{{tableData.response&&tableData.response.status}}
+                </el-button>
+                <el-button style="float: right; padding: 1px 0" type="text">
+                  响应时间:{{tableData.response&&tableData.response.time}}
+                </el-button>
+                <el-button style="float: right; padding: 1px 0" type="text" :data="tableData">测试结果:{{tableData.result}}
+                </el-button>
+              </div>
+              <el-card style="margin: 5px;height:200px;">
+                <el-tabs v-model="tab">
+                  <el-tab-pane label="请求信息" name="request">
+                    {{ tableData.request}}
+                  </el-tab-pane>
+                  <el-tab-pane label="响应结果" name="response">{{tableData.response}}</el-tab-pane>
+                  <el-tab-pane label="断言信息" name="expect">{{tableData.expect}}</el-tab-pane>
+                  <el-tab-pane label="提取变量" name="extra">{{tableData.extra}}</el-tab-pane>
+                  <el-tab-pane label="异常信息" name="error">{{tableData.error_code}}</el-tab-pane>
+                </el-tabs>
+              </el-card>
+            </el-card>
+          </div>
+        </el-form>
+      </el-main>
+    </el-container>
   </div>
 
 </template>
@@ -152,9 +154,12 @@
 <script>
   import service from "../../utils/axios";
   import getProject from "../../utils/getProject";
+  import EnvSetting from "../../components/envSetting";
+  import NavMenu from "../../components/navMenu";
   // <!-- import navMenu from "../../components/navMenu"; -->
 
   export default {
+    components: {NavMenu, EnvSetting},
     props: {
       envSelect: {
         type: String,
@@ -165,6 +170,7 @@
       return {
         tab: 'request',
         id: '',
+        isCollapse: false,
 
         formInline: {
           user: '',
@@ -243,15 +249,10 @@
       })
     },
     methods: {
-      addTab(targetName) {
-        let newTabName = ++this.tabIndex + '';
-        this.editableTabs.push({
-          title: 'New Tab',
-          name: newTabName,
-          content: 'New Tab content'
-        });
-        this.editableTabsValue = newTabName;
+      handleAddTab(tab) {
+        this.editableTabs.push(tab);
       },
+
       removeTab(targetName) {
         let tabs = this.editableTabs;
         let activeName = this.editableTabsValue;
@@ -327,6 +328,34 @@
           this.id = res.data.id || '';
 
         })
+      },
+      handleTabsEdit(targetName, action) {
+        if (action === 'add') {
+          let newTabName = ++this.tabIndex + '';
+          this.editableTabs.push({
+            title: 'New Tab',
+            name: newTabName,
+            content: 'New Tab content'
+          });
+          this.editableTabsValue = newTabName;
+        }
+        if (action === 'remove') {
+          let tabs = this.editableTabs;
+          let activeName = this.editableTabsValue;
+          if (activeName === targetName) {
+            tabs.forEach((tab, index) => {
+              if (tab.name === targetName) {
+                let nextTab = tabs[index + 1] || tabs[index - 1];
+                if (nextTab) {
+                  activeName = nextTab.name;
+                }
+              }
+            });
+          }
+
+          this.editableTabsValue = activeName;
+          this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+        }
       }
     }
   }
@@ -375,5 +404,6 @@
   .data-request {
     margin-top: 20px;
   }
+
 
 </style>

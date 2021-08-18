@@ -9,54 +9,54 @@
       clearable>
     </el-input>
     <!-- 侧边栏修改项目 -->
-    <el-menu :router="true">
+    <el-menu :default-active="$route.path">
       <el-menu-item>
         <i class="el-icon-plus"></i>
         <el-dropdown>
           <i class="el-icon-setting" style="margin-right: 15px"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>导入</el-dropdown-item>
-            <el-dropdown-item>导出</el-dropdown-item>
+            <el-dropdown-item>导入(暂未开发)</el-dropdown-item>
+            <el-dropdown-item>导出(暂未开发)</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <span slot="title">默认分类</span>
       </el-menu-item>
-    </el-menu>
-    <el-tree
-      :default-active="$route.path"
-      :data="nameList"
-      node-key="name"
-      default-expand-all
-      @node-drag-start="handleDragStart"
-      @node-drag-enter="handleDragEnter"
-      @node-drag-leave="handleDragLeave"
-      @node-drag-over="handleDragOver"
-      @node-drag-end="handleDragEnd"
-      @node-drop="handleDrop"
-      @node-click="handleClick"
-      :props="data"
-      draggable
-      :allow-drop="allowDrop"
-      :allow-drag="allowDrag">
+
+      <el-tree
+        :data="nameList"
+        node-key="name"
+        default-expand-all
+        @node-drag-start="handleDragStart"
+        @node-drag-enter="handleDragEnter"
+        @node-drag-leave="handleDragLeave"
+        @node-drag-over="handleDragOver"
+        @node-drag-end="handleDragEnd"
+        @node-drop="handleDrop"
+        @node-click="handleClick"
+        :props="data"
+        draggable
+        :allow-drop="allowDrop"
+        :allow-drag="allowDrag">
       <span class="custom-tree-node" slot-scope="{ node, data }">
        <span class="custom-tree-node">
             <span>{{node.label}}</span>
             <span>
               <el-button size="mini" type="text" class="el-icon-folder-add"
                          @click.stop="ProjectBounced = true"></el-button>
-              <el-button size="mini" type="text" @click.stop="append(data)"
+              <el-button size="small" type="text" @click="addTab"
                          class="el-icon-circle-plus-outline"></el-button>
               <el-button size="mini" type="text" @click.stop="DeleteData(data)"
                          class="el-icon-delete"></el-button>
+
             </span>
           </span>
       </span>
-    </el-tree>
-    <el-dialog
-      title="添加项目"
-      :visible.sync="ProjectBounced"
-      width="30%"
-      :before-close="handleClose">
+      </el-tree>
+      <el-dialog
+        title="添加项目"
+        :visible.sync="ProjectBounced"
+        width="30%"
+        :before-close="handleClose">
               <span>
                 <div style="margin: 20px;"></div>
                 <el-form ref="projectFrom" label-width="100px" :model="projectFrom">
@@ -68,19 +68,19 @@
                   </el-form-item>
                 </el-form>
               </span>
-      <span slot="footer" class="dialog-footer">
+        <span slot="footer" class="dialog-footer">
                 <el-button @click="ProjectBounced = false">取 消</el-button>
                 <el-button type="primary" @click="projectData">确 定</el-button>
               </span>
-    </el-dialog>
-
+      </el-dialog>
+    </el-menu>
   </div>
 </template>
 
 <script>
-  import service from "../../utils/axios";
-  import getProject from "../../utils/getProject";
-  import {deleteProject} from "../../api/project";
+  import service from "../utils/axios";
+  import getProject from "../utils/getProject";
+  import {deleteProject} from "../api/project";
 
   export default {
     name: "navMenu",
@@ -109,14 +109,12 @@
       this.getList();
     },
     methods: {
-      addTab(targetName) {
-        let newTabName = ++this.tabIndex + '';
-        this.editableTabs.push({
-          title: 'New Tab',
-          name: newTabName,
-          content: 'New Tab content'
+      addTab() {
+        this.$emit('add-tab', {
+          title: 'new tab',
+          name: 'tab',
+          content: '',
         });
-        this.editableTabsValue = newTabName;
       },
       handleClick(d, node) {
         console.log(d, node);
@@ -228,7 +226,7 @@
 </script>
 
 <style lang="less">
-  .project-tree {
+  .navMenu {
     height: 100%;
     background-color: #1b2c3e;
 
@@ -250,16 +248,22 @@
       background-color: #505050;
     }
 
-      /* 树形组件 */
+    /* 树形组件 */
 
-  .custom-tree-node {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
+    .custom-tree-node {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      padding-right: 8px;
+    }
   }
+
+  .el-menu {
+    background-color: #35495E;
+    font-size: 5px;
+    text-align: center;
   }
 
 
