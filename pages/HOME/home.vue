@@ -1,5 +1,12 @@
 <template>
   <div>
+  <!-- 分成三个部分 -->
+  <!-- navSideBar 左侧边栏 -->
+  <!-- 顶部tap -->
+  <!--  内容模块 -->
+    <!-- <el-aside :width="isCollapse ? '65px' : '300px'">
+    //     <project-tree></project-tree>
+    // </el-aside> -->
     <div style="margin-bottom: 20px;">
       <el-button
         size="small"
@@ -145,6 +152,7 @@
 <script>
   import service from "../../utils/axios";
   import getProject from "../../utils/getProject";
+  // <!-- import navMenu from "../../components/navMenu"; -->
 
   export default {
     props: {

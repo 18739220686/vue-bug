@@ -3,7 +3,7 @@ import * as router from "vue-router";
 // import {getUser} from "@/utils/auth";
 //创建axios实例
 const service = axios.create({
-  baseURL: 'http://127.0.0.1:8000/v1',//api的base_url
+  baseURL: 'http://192.168.8.142:8000/v1',//api的base_url
   timeout: 30000, //请求超时
   use: (config => {
     console.log(config)

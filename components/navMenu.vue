@@ -1,5 +1,5 @@
 <template>
-  <div class="project-tree">
+  <div class="navMenu">
     <!-- 搜索 -->
     <el-input
       style="margin: 10px;width: calc(100% - 20px)"
@@ -83,7 +83,7 @@
   import {deleteProject} from "../../api/project";
 
   export default {
-    name: "project-tree",
+    name: "navMenu",
     data() {
       return {
         editableTabsValue: '2',
@@ -249,6 +249,17 @@
     .el-tree-node__content:hover {
       background-color: #505050;
     }
+
+      /* 树形组件 */
+
+  .custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-right: 8px;
+  }
   }
 
 
