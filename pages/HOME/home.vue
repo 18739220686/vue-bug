@@ -18,7 +18,7 @@
         {{item.content}}
       </el-tab-pane>
     </el-tabs>
-    <el-form ref="addForm" :model="addForm">
+    <el-form ref="addForm" :model="addForm" inline label-position="right" label-width="80px">
       <!-- 搜索 -->
       <el-card shadow="always">
         <el-input placeholder="输入接口路径" class="input-with-select" v-model="addForm.path">
@@ -37,43 +37,57 @@
           <!-- 基本信息 -->
           <span class="form-card">基本信息</span>
           <!-- 名称 -->
-          <el-form-item label="名称:">
-            <el-input v-model="addForm.name" placeholder="请输入名称" prop="case_name"></el-input>
-          </el-form-item>
-          <!--  项目分类  -->
-          <el-form-item label="项目分类:">
-            <el-select v-model="addForm.project_id" clearable placeholder="请选择" prop="project_id">
-              <el-option
-                v-for="item in nameList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-                prop="project_id">
-              </el-option>
-            </el-select>
-          </el-form-item>
+          <el-row type="flex" class="row-bg">
+            <el-col :span="12">
+              <el-form-item label="名称:">
+                <el-input v-model="addForm.name" placeholder="请输入名称" prop="case_name" style="width: 320px"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <!--  项目分类  -->
+              <el-form-item label="项目分类:">
+                <el-select v-model="addForm.project_id" clearable placeholder="请选择" prop="project_id"
+                           class="select-wrapper">
+                  <el-option
+                    v-for="item in nameList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                    prop="project_id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
-          <!-- 预期结果 -->
-
-          <el-form-item label="预期结果:">
-            <el-input
-              type="textarea"
-              autosize
-              placeholder="请输入内容"
-              v-model="addForm.expect"
-              prop="expect">
-            </el-input>
-          </el-form-item>
-          <!--  提取变量  -->
-          <el-form-item label="提取变量:">
-            <el-input
-              type="textarea"
-              autosize
-              placeholder="请输入内容"
-              v-model="addForm.extra"
-              prop="extra">
-            </el-input>
-          </el-form-item>
+          <el-row type="flex" class="row-bg">
+            <el-col :span="12">
+              <!-- 预期结果 -->
+              <el-form-item label="预期结果:">
+                <el-input
+                  type="textarea"
+                  autosize
+                  placeholder="请输入内容"
+                  v-model="addForm.expect"
+                  style="width: 320px"
+                  prop="expect">
+                </el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <!--  提取变量  -->
+              <el-form-item label="提取变量:">
+                <el-input
+                  type="textarea"
+                  autosize
+                  placeholder="请输入内容"
+                  v-model="addForm.extra"
+                  style="width: 320px"
+                  prop="extra">
+                </el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-card>
         <!--   请求体    -->
         <el-tabs class="data-request" type="border-card">
@@ -109,15 +123,17 @@
             <el-button style="float: right; padding: 1px 0" type="text" :data="tableData">测试结果:{{tableData.result}}
             </el-button>
           </div>
-          <el-tabs v-model="tab">
-            <el-tab-pane label="请求信息" name="request">
-              {{ tableData.request}}
-            </el-tab-pane>
-            <el-tab-pane label="响应结果" name="response">{{tableData.response}}</el-tab-pane>
-            <el-tab-pane label="断言信息" name="expect">{{tableData.expect}}</el-tab-pane>
-            <el-tab-pane label="提取变量" name="extra">{{tableData.extra}}</el-tab-pane>
-            <el-tab-pane label="异常信息" name="error">{{tableData.error_code}}</el-tab-pane>
-          </el-tabs>
+          <el-card style="margin: 5px;height:200px;">
+            <el-tabs v-model="tab">
+              <el-tab-pane label="请求信息" name="request">
+                {{ tableData.request}}
+              </el-tab-pane>
+              <el-tab-pane label="响应结果" name="response">{{tableData.response}}</el-tab-pane>
+              <el-tab-pane label="断言信息" name="expect">{{tableData.expect}}</el-tab-pane>
+              <el-tab-pane label="提取变量" name="extra">{{tableData.extra}}</el-tab-pane>
+              <el-tab-pane label="异常信息" name="error">{{tableData.error_code}}</el-tab-pane>
+            </el-tabs>
+          </el-card>
         </el-card>
       </div>
     </el-form>
@@ -309,20 +325,21 @@
 
 </script>
 
-<style lang="less">
-
-  .el-select .el-input {
-    width: 100px;
-  }
+<style lang="less" scoped>
 
   .form-card {
-    margin-top: 10px;
+    display: inline-block;
+    margin-bottom: 20px;
   }
 
   .el-form {
     margin: auto;
     width: 99%;
     padding: 10px;
+  }
+
+  .select-wrapper {
+    width: 320px;
   }
 
   .el-date-picker {
