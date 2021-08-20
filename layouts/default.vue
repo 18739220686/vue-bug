@@ -3,7 +3,7 @@
 
     <!-- 顶部区域 -->
     <el-header>
-        <navHeader></navHeader>
+        <navHeader @get-env="(val) => envSelect = val"></navHeader>
     </el-header>
 
     <!-- 页面主体区域 -->
@@ -31,7 +31,9 @@
 
     data() {
       return {
-        envSelect: ""
+        envSelect: "",
+        envList: [],
+
       }
     },
     created() {

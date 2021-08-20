@@ -36,7 +36,8 @@
         :props="data"
         draggable
         :allow-drop="allowDrop"
-        :allow-drag="allowDrag">
+        :allow-drag="allowDrag"
+      >
       <span class="custom-tree-node" slot-scope="{ node, data }">
        <span class="custom-tree-node">
             <span>{{node.label}}</span>
@@ -81,9 +82,11 @@
   import service from "../utils/axios";
   import getProject from "../utils/getProject";
   import {deleteProject} from "../api/project";
+  import Interface from "./interface";
 
   export default {
     name: "navMenu",
+    components: {Interface},
     data() {
       return {
         editableTabsValue: '2',
@@ -111,8 +114,8 @@
     methods: {
       addTab() {
         this.$emit('add-tab', {
-          title: 'new tab',
-          name: 'tab',
+          title: '新建接口',
+          name: 'name',
           content: '',
         });
       },

@@ -8,31 +8,29 @@
 
     <!-- 顶部导航 -->
 
-        <div class="grid-content bg-purple"></div>
-      <el-menu mode="horizontal">
-        <el-menu-item index="1" @click="home">接口管理</el-menu-item>
-        <el-menu-item index="2" @click="dashboard">数据统计</el-menu-item>
-        <!-- <el-menu-item index="3">报告管理</el-menu-item> -->
-      </el-menu>
+    <div class="grid-content bg-purple"></div>
+    <el-menu mode="horizontal" >
+      <el-menu-item index="1" @click="home">接口管理</el-menu-item>
+      <el-menu-item index="2" @click="dashboard">数据统计</el-menu-item>
+      <!-- <el-menu-item index="3">报告管理</el-menu-item> -->
+    </el-menu>
 
-      <!-- 环境设置 -->
-      <div>
-        <el-select clearable placeholder="环境配置" v-model="envSelect" value-key="id" prop="">
-          <el-option v-for="item in envList"
-                     :key="item.id"
-                     :label="item.name"
-                     :value="item">
-          </el-option>
-          <!-- 添加环境 -->
-          <el-button class="el-icon-s-tools" type="success" plain>添加环境</el-button>
-        </el-select>
+    <!-- 环境设置 -->
 
-        <!-- 渲染环境数据  -->
-        <env-setting></env-setting>
-        <el-button type="text" @click="logout">退出</el-button>
-      </div>
+    <el-select clearable placeholder="环境配置" v-model="envSelect" value-key="id">
+      <el-option v-for="item in envList"
+                 :key="item.id"
+                 :label="item.name"
+                 :value="item.id">
+      </el-option>
+      <!-- 添加环境 -->
+      <el-button class="el-icon-s-tools" type="success" plain>添加环境</el-button>
+    </el-select>
+
+    <!-- 渲染环境数据  -->
+    <env-setting></env-setting>
+    <el-button type="text" @click="logout">退出</el-button>
   </el-row>
-
 </template>
 
 <script>
@@ -54,6 +52,12 @@
       // 页面初始化时的动作
       this.getEnvList()
 
+    },
+
+    watch: {
+      envSelect(val) {
+        this.$emit('get-env', `${val}`);
+      },
     },
 
     //  绑定页面元素的动作
@@ -120,7 +124,6 @@
   .el-main {
     background-color: #fdfdfd;
   }
-
 
 
 </style>
